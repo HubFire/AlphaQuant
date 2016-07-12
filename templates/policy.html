@@ -1,0 +1,309 @@
+{% extends 'base.html' %}
+
+{% block cssfile %}
+    <link href="/static/bootstrap/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f2f2f2;
+        }
+
+        .policy_solid {
+            border: 1px solid #d3d3d3;
+        }
+
+        #policy_top {
+            height: 50px;
+            border-bottom: 0;
+        }
+
+        #policy_content {
+            height: 567px;
+            border-top: 1px solid #AAAAAA;
+        }
+
+        #policy_left_top {
+            height: 36px;
+        }
+
+        #policy_editor {
+            height: 530px;
+            display: none;
+        }
+
+        #policy_right_top {
+            height: 36px;
+        }
+
+        #policy_right_result {
+            background-color: white;
+            height: 360px;
+        }
+
+        #policy_result_info {
+            height: 55px;
+        }
+
+        #policy_result_chart {
+            height: 305px;
+        }
+
+        #policy_log_error {
+            height: 170px;
+        }
+
+        #policy_ace_log_error {
+            height: 126px;
+            overflow: auto
+        }
+
+        .policy_input {
+            height: 30px;
+            width: 15%;
+            margin-top: 3px;
+            margin-left: 2px;
+        }
+
+        .policy_input2 {
+            height: 27px;
+            width: 30%;
+            margin-top: 10px;
+            margin-left: 2px;
+            background-color: #f2f2f2;
+            border: none
+        }
+
+        .policy_btn {
+            margin-top: 2px;
+        }
+
+        .defaut_info {
+            line-height: 28px;
+            padding: 60px 0 0 60px;
+            color: gray;
+            font-size: 18px;
+            opacity: .8;
+        }
+
+        .default-font {
+            font-size: 14px;
+            font-family: 微软雅黑;
+        }
+
+
+    </style>
+
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row policy_solid" id="policy_top">
+            <div class="col-md-8">
+                <a href="{% url 'policy_list' %}"><span class="glyphicon glyphicon-menu-left " aria-hidden="true"
+                                                        style=" margin-top:2px;"></span></a>
+                <input type="text" id="policyTitle" name="title" class="policy_input2 default-font" onchange="sicavePoly()"
+                       value="{{ policy.name }}"/>
+                <input type="hidden" id="policy_uuid" value="{{ policy.uuid }}"/>
+                <input type="hidden" id="policy_id" value="{{ policy.id }}"/>
+            </div>
+            <div class="col-md-4" style=" margin-top: 10px;">
+                <a href="{% url 'community' 1 %}">
+                    <button type="button" class="btn btn-link pull-right">策略库>></button>
+                </a>
+{#                <button class="btn pull-right " type="button">策略</button>#}
+{#                <button class="btn pull-right " type="button">回测</button>#}
+            </div>
+        </div>
+        <div class="row policy_solid" id="policy_content">
+            <div class="col-md-5 " id="policy_left">
+                <div class="row policy_solid" id="policy_left_top">
+                    <div class="col-md-6">
+                        <input class=" policy_btn " style="" id="saveBtn" type="button" value="已保存">
+                        <button class="policy_btn" id='buildBtn' type="button">编译运行</button>
+                    </div>
+                    <div class="col-md-6">
+
+                            <div class="dropdown pull-right" >
+{#                                <input type="text" id="editor-search-input" hidden="true" placeholder="关键字" style=" height: 27px;width: 60%;">#}
+{#                                 &nbsp;&nbsp;#}
+{#                            <span class="glyphicon glyphicon-menu-down" aria-hidden="true" id="findNext"></span>#}
+{#                            <span class="glyphicon glyphicon-menu-up" aria-hidden="true" id="findPrev"></span>#}
+                                <span class="glyphicon glyphicon-search " aria-hidden="true" id="editor-search"></span>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    <span class="  glyphicon glyphicon-cog" aria-hidden="true"></span>
+                                    <span class="caret"></span>
+                                </button>
+                                <input type="hidden" id="editor-fontsize" value="{{ editor.fontsize }}"/>
+                                <input type="hidden" id="editor-theme" value="{{ editor.theme }}"/>
+                                <input type="hidden" id="editor-wropmode" value="{{ editor.wropmode }}"/>
+                                <ul class="dropdown-menu prefs-menu pull-right">
+
+                                    {#                                <div id="choose-font">#}
+                                    <li id="font-size-12"><a href="#">小号字体</a></li>
+                                    <li id="font-size-14"><a href="#">中号字体</a></li>
+                                    <li id="font-size-16"><a href="#">大号字体</a></li>
+                                    {#                                </div>#}
+                                    <li role="separator" class="divider"></li>
+                                    {#                                <div id="choose-theme">#}
+                                    <li id="theme-monokai"><a href="#">monokai</a></li>
+                                    <li id="theme-eclipse"><a href="#">eclipse </a></li>
+                                    <li id="theme-twilight"><a href="#">twilight</a></li>
+                                    {#                                </div>#}
+                                    <li role="separator" class="divider"></li>
+                                    {#                                <div id="choose-wropmode">#}
+                                    <li id="wropmode-true"><a href="#">代码折叠</a></li>
+                                    <li id="wropmode-false"><a href="#">代码不折叠</a></li>
+                                    {#                                </div>#}
+                                    <li role="separator" class="divider"></li>
+                                    <li id="Keyboard"><a href="#">显示快捷键列表</a></li>
+                                </ul>
+                            </div>
+
+
+                    </div>
+                </div>
+
+                <div class="row policy_solid" id="policy_editor">{% if policy.content %}{{ policy.content }}{% else %}args=[14,5]
+def initialize(self):
+
+    self.__rsi = rsi.RSI(self.feed[self.instrument].getCloseDataSeries(),self.args[0])
+    self.__sma = ma.SMA(self.__rsi, self.args[1])
+
+
+
+def onBars(self, bars):
+
+    sma= self.__sma[-1]
+    if sma is None:
+        return
+
+    price = bars[self.instrument].getClose()
+    shares=self.getBroker().getShares(self.instrument)
+
+    if price > 1.01*sma:
+        self.marketOrder(self.instrument,shares*-1)
+        self.info('SELL %i'%shares)
+    if price < 0.9*sma:
+        sharesToBuy=int(self.getBroker().getCash()/price)
+        self.marketOrder(self.instrument, sharesToBuy)
+        self.info('BUY %d'%shares)
+
+                    {% endif %}
+                </div>
+
+            </div>
+            <div class="col-md-7" id="policy_right">
+                <div id="policy_right_top" class="row policy_solid" style="background-color: #FFFFE0">
+                    <div class="col-md-10">
+                        <form class="form-inline"> {% csrf_token %}
+                             <div id="build-loading"  class="hidden">
+                                  <span class="default-font ">编译中</span>
+                            <img src="/static/image/loading.gif" width="30px">
+                        </div>
+
+                            <div class="form-group" id="policy-status">
+                                <input type="text" id="company" class="policy_input form-control " style="width: 70px"
+                                       value="000002"/>
+
+                                <input type='text' id="beginTime" class="form-control policy_input datetimepicker"
+                                       style="width: 85px"
+                                       readonly value="2015-02-01"/>
+                                到
+                                <input type='text' id="endTime" class=" form-control policy_input datetimepicker"
+                                       style="width: 85px"
+                                       readonly value="2016-02-01"/>
+
+                                &#165;
+                                <input type="text" id="money" class="form-control policy_input" style="width: 70px"
+                                       value="30000"/>
+
+                                <select id='rate' class="form-control policy_input ">
+                                    <option value="day" selected="selected">每天</option>
+                                    <option value="minute">分钟</option>
+                                </select>
+                            </div>
+                        </form>
+
+
+                    </div>
+                    <div class="col-md-2">
+                        <button id="loopbackBtn" class="btn btn-primary pull-right " type="button">运行回测
+                        </button>
+                    </div>
+                </div>
+                <div id="policy_right_result" class="row policy_solid">
+                    <div class="col-md-12">
+                        <div id="policy_result_info" class="row">
+                            <table class="table-condensed default-fontx">
+                                <tr>
+                                    <th>策略收益</th>
+                                    <th>基准收益</th>
+                                    <th>Alpha</th>
+                                    <th>Beta</th>
+                                    <th>Sharpe</th>
+                                    <th>最大回撤</th>
+                                </tr>
+                                <tr>
+                                    <td id="strategy_return">--</td>
+                                    <td id="basic_return">--</td>
+                                    <td id="alpha">--</td>
+                                    <td id="beta">--</td>
+                                    <td id="sharp">--</td>
+                                    <td id="maxdown">--</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div id="policy_result_chart" class="row policy_solid">
+                            <div class="defaut_info">
+                                <span>点击”编译运行"进行快速回测(Ctrl-Alt-B)</span>
+                                <br>
+                                <span>或者 点击"运行回测"进行详细的回测(Ctrl-Alt-L)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id='policy_log_error' class="row policy_solid">
+                    <ul class="nav nav-tabs" id="nav-tabs">
+                        <li class="active">
+                            <a id="daily-logs-link" href="#" data-toggle="tab">日志</a>
+                        </li>
+                        <li>
+                            <a id="daily-error-tab-link" href="#" data-toggle="tab">错误</a>
+                        </li>
+                    </ul>
+                    <div id="policy_ace_log_error">
+                        <div id="log-loading"  class="hidden">
+                            <img src="/static/image/loading.gif" width="30px">
+                        </div>
+                        <div id="policy_log" style="background-color: black;font-size: 12px"></div>
+                        <div id="policy_error" style="display:none"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jsfile %}
+    <script type="text/javascript" src="/static/plugin/ace-builds/src/ace.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/static/plugin/ace-builds/src/ext-language_tools.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/static/bootstrap//js/bootstrap-datetimepicker.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"
+            charset="utf-8"></script>
+    <script type="text/javascript" src="/static/js/highstock.js"></script>
+    <script type="text/javascript" src="/static/js/editor.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/static/js/policy.js" charset="utf-8"></script>
+    <script>
+
+        {#        解决高分辨率下显示的问题#}
+        var height = $(window).height();
+        if (height > 667) {
+            $("#policy_content").css("height", height - 100)
+            $("#policy_editor").css("height", height - 137)
+            $("#policy_right_result").css("height", height - 307)
+            $("#policy_result_chart").css("height", height - 362)
+        }
+
+    </script>
+{% endblock %}

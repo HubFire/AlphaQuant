@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load pagination_tags %}
+{% block title %}
+    社区
+{% endblock %}
+
+
+{% block content %}
+    <div class="container">
+        <h3>社区</h3>
+        <br>
+        <div class="row">
+            <div class="col-md-9 community-left">
+                <ul class="nav nav-tabs" id="nav_community">
+                    {% for category in category_list %}
+                        <li role="presentation"><a href="{% url 'community' category.id %}">{{ category.name }}</a></li>
+                    {% endfor %}
+                </ul>
+                <br>
+
+                {% autopaginate articles 10 %}
+                {% for article in articles %}
+                    <div class="list">
+                        <div class="post-row">
+                            <div class="head-portrait">
+
+                            </div>
+                            <div class="arctile-title">
+                                <h4><a href="{% url 'article' article.id %}"> {{ article.title }}</a></h4>
+                            </div>
+                        </div>
+                        <div class="arctile-info">
+                            作者：<a
+                                href="{% url 'user_account' article.author_id %}">{{ article.author }} </a>&nbsp;回复{{ article.comment_set.select_related.count }}&nbsp;浏览{{ article.view_count }}
+                            日期{{ article.publish_date|date:'Y-m-d H:i' }}
+                        </div>
+                    </div>
+                    <hr class="featurette-divider">
+                {% endfor %}
+                {% paginate %}
+            </div>
+            <div class="col-md-3 community-right">
+                <a href="{% url 'new_article' %}">
+                    <button type="button" class="btn btn-primary pull-right">发起主题</button>
+                </a>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jsfile %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var cpath = $("#nav_community a[href='{{ request.path }}']")[0];
+            $(cpath).parent().addClass("active");
+            $(cpath).parent().siblings().removeClass('active');
+        })
+    </script>
+{% endblock %}

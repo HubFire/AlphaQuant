@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/static/image/icon.ico">
+
+    <title>Welcome to AlphaQuant</title>
+
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/cover.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="site-wrapper">
+
+    <div class="site-wrapper-inner">
+
+        <div class="cover-container">
+
+            <div class="masthead clearfix">
+                <div class="inner">
+                    <h3 class="masthead-brand">AlphaQuant</h3>
+                    <nav>
+                        <ul class="nav masthead-nav">
+                            <li class="active"><a href="{% url '/' %}">主页</a></li>
+                            <li><a href="{% url 'policy_list' %}">我的策略</a></li>
+                            <li><a href="{% url 'community' 1 %}">社区</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="inner cover">
+                <h1 class="cover-heading" style="font-family:华文中宋">阿尔法量化</h1>
+                <p class="lead" style="font-family:方正舒体">
+                    我们致力于打造最高效、易用的量化交易平台。
+                    
+                    我们为量化爱好者提供线上交流社区，便于用户交流量化策略、学习量化知识，一起成长。</p>
+                <p class="lead">
+                    <a href="{% url 'policy_list' %}" class="btn btn-lg btn-default" >编辑策略</a>
+                </p>
+            </div>
+            <div class="mastfoot">
+                <div class="inner">
+                    <p>@2016 @alphaquant.top</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="/static/js/ie10-viewport-bug-workaround.js"></script>
+
+
+</body>
+</html>

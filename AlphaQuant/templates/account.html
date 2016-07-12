@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load pagination_tags %}
+{% block cssfile %}
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .account_info {
+            margin: 0 auto;
+            margin-top: 20px;
+            width: 80%;
+            min-height: 500px;
+            height: auto;
+            background-color: white;
+            border: 1px solid #d3d3d3;
+        }
+
+        .account-content {
+            margin: 30px 30px 30px 30px;
+        }
+
+        #account-info {
+            height: 100px;
+        }
+
+
+    </style>
+
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="account_info">
+            <div class="account-content">
+                <div class="row" id='account-info'>
+                    <div class="col-md-3">
+                        <form action="{% url 'upload_head_img' %}" method="post" enctype="multipart/form-data">
+                                                {% csrf_token %}
+
+                            <div>
+                                {% if userInfo.img_path %}
+                                    <img src="{{ userInfo.img_path }}" width="64px" height="64px"/>
+                                {% else %}
+                                    <img src="/static/head-image/default.jpg" width="64px" height="64px"/>
+                                {% endif %}
+                            </div>
+                        {% if isSelf %}
+                            <input type="file" name="image" value="上传图片"/>
+                            <input type="submit" name="submit" value="保存" id="submit_img"/>
+                        {% endif %}
+                        </form>
+                    </div>
+                    <div class="col-md-6">
+                       <h1>{{ userInfo.name }}</h1>
+                        <br>
+                         <input type="text" value="{{ userInfo.resume }}">
+                    </div>
+                    <div class="col-md-3">
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        {% if isSelf %}
+
+                        {% endif %}
+                    </div>
+                </div>
+
+                <hr>
+                <div >
+                    {% autopaginate articles 5 %}
+                    {% for article in articles %}
+                        <a href="{% url 'article' article.id %}"> {{ article.title }}</a>
+                        <br><hr>
+                    {% endfor %}
+                 {% paginate %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jsfile %}
+    <script>
+
+    </script>
+{% endblock %}
