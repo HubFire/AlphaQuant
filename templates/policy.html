@@ -164,13 +164,9 @@
                     </div>
                 </div>
 
-                <div class="row policy_solid" id="policy_editor">{% if policy.content %}{{ policy.content }}{% else %}args=[14,5]
+                <div class="row policy_solid" id="policy_editor">{% if policy.content %}{{ policy.content }}{% else %}args=[5]
 def initialize(self):
-
-    self.__rsi = rsi.RSI(self.feed[self.instrument].getCloseDataSeries(),self.args[0])
-    self.__sma = ma.SMA(self.__rsi, self.args[1])
-
-
+    self.__sma = ma.SMA(self.feed[self.instrument].getCloseDataSeries(), self.args[0])
 
 def onBars(self, bars):
 

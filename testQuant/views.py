@@ -357,3 +357,5 @@ def upload_head_img(request):
     userprofile.img_path = aliases_path
     userprofile.save()
     return HttpResponseRedirect("/user/account/index")
+
+

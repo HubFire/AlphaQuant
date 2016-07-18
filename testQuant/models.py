@@ -5,8 +5,9 @@ from django.db import models
 
 #  导入django自带的用户认证系统
 from django.contrib.auth.models import User
-
+from django.utils import timezone
 # Create your models here.
+import datetime
 
 #  帖子表
 class Article(models.Model):
@@ -61,7 +62,9 @@ class Policy(models.Model):
     author= models.ForeignKey("UserProfile")
     name = models.CharField(max_length=64)
     content = models.TextField(u'内容')
-    update_time = models.DateTimeField(auto_now=True )
+    update_time = models.DateTimeField(auto_now=True)
+
+
     # remark = models.CharField(max_length=255)
     # backtest_count = models.IntegerField(default=0)
     def __unicode__(self):
