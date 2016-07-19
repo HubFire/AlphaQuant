@@ -359,3 +359,5 @@ def upload_head_img(request):
     return HttpResponseRedirect("/user/account/index")
 
 
+def helpApi(request):
+    return HttpResponseRedirect('help.html')

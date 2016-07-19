@@ -30,7 +30,20 @@
                         <ul class="nav masthead-nav">
                             <li class="active"><a href="{% url '/' %}">主页</a></li>
                             <li><a href="{% url 'policy_list' %}">我的策略</a></li>
-                            <li><a href="{% url 'community' 1 %}">社区</a></li>
+                            <li><a href="{% url 'community' 1 %}">社区1</a></li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">帮助 <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                <li><a href="#">常见问题</a></li>
+                                <li><a href="#">API文档</a></li>
+                                <li><a href="#">财务数据</a></li>
+                                <li><a href="#">指数数据</a></li>
+                                <li><a href="#">基金数据</a></li>
+                                <li><a href="#">股指数据</a></li>
+                                <li><a href="#">更新日志</a></li>
+                    </ul>
+                </li>
                         </ul>
                     </nav>
                 </div>

@@ -291,14 +291,20 @@ function getPolicyResult(taskId, offset) {
                     log = (String)(log);
 
                     logs = log.split(",");
+
+                    var str='';
+
                     var str = '';
                     for (var i = 0; i < logs.length; i++) {
                         log = logs[i].trim();
-                        log = log.split(" ")
+                        log =log.substring(1,log.length-1);
+
+                        log =log.split(' ')
+                        
                         log = "<span style='color: #247bac;'>"+" "+log[0]+" "+log[1]+" "+ "</span>"
-                            + "<span style='color: #285628;'>"+log[2]+" "+"</span>"
-                            + "<span style='color: white;'>"+log[3] +"</span>";
+                        + "<span style='color: #285628;'>"+log[2]+" "+"</span>" + "<span style='color: white;'>"+log[3] +"</span>";
                         str = str + log + "<br>";
+
                     }
                     $("#log-loading").addClass('hidden');
                     $('#policy_log').html((str));
