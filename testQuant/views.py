@@ -80,6 +80,28 @@ def savePolicy(request):
                 return render(request, '404.html', {'err_msg': u'该策略不存在!'})
     return HttpResponse()
 
+def getTaskStatus(request):
+    if request.method == 'POST':
+        task_id = request.POST.get('taskId')
+        task =Task.objects.get(id=task_id)
+        if task is not None:
+            status = task.status
+            return HttpResponse(status)
+        else:
+            return HttpResponse("task is None")
+
+def getTaskError(request):
+    if  request.method == 'GET':
+        task_id= request.GET.get('taskId')
+        if task_id is  not None:
+            error=ComplieError.objects.get(task_id=task_id)
+            if error is not None:
+                return HttpResponse(error.error_content)
+            else:
+                return HttpResponse('unknow  error happened')
+        else:
+            return HttpResponse('unknow  error happened')
+
 
 def buildPolicy(request):
     if request.method == 'POST':
@@ -148,7 +170,6 @@ def getLogResult(task_id, offset):
 # 获取策略结果信息
 def getResultInfo(request):
     task_id = request.POST.get('taskId')
-    print task_id
     result = Result.objects.get(task_id=task_id)
     strategy_return = result.strategy_return
     basic_return = result.basic_return
@@ -360,4 +381,5 @@ def upload_head_img(request):
 
 
 def helpApi(request):
-    return HttpResponseRedirect('help.html')
+    #return HttpResponseRedirect('help.html')
+    return render(request, 'help.html')

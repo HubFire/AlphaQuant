@@ -46,5 +46,10 @@ urlpatterns = [
     url(r'^getResultInfo/$', alphaquant_views.getResultInfo, name='getResultInfo'),
     url(r'^getBacktestInfo/$', alphaquant_views.getBacktestInfo,name='getBacktestInfo'),
     url(r'^setEditorInfo/$', alphaquant_views.setEditorInfo, name='setEditorInfo'),
-    url(r'^help/api/$',alphaquant_views.helpApi, name='help'),
+
+    url(r'^getTaskStatus/$', alphaquant_views.getTaskStatus, name='getTaskStatus'),
+
+    url(r'^getTaskError/$', alphaquant_views.getTaskError, name='getTaskError'),
+
+    url(r'^help/api/',alphaquant_views.helpApi, name='help'),
 ]

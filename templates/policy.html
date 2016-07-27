@@ -180,10 +180,10 @@ def onBars(self, bars):
     if price > 1.01*sma:
         self.marketOrder(self.instrument,shares*-1)
         self.info('SELL %i'%shares)
-    if price < 0.9*sma:
+    if price < 0.99*sma:
         sharesToBuy=int(self.getBroker().getCash()/price)
         self.marketOrder(self.instrument, sharesToBuy)
-        self.info('BUY %d'%shares)
+        self.info('BUY %d'%sharesToBuy)
 
                     {% endif %}
                 </div>
@@ -261,10 +261,10 @@ def onBars(self, bars):
                 </div>
                 <div id='policy_log_error' class="row policy_solid">
                     <ul class="nav nav-tabs" id="nav-tabs">
-                        <li class="active">
+                        <li class="active" id="log_tab">
                             <a id="daily-logs-link" href="#" data-toggle="tab">日志</a>
                         </li>
-                        <li>
+                        <li id="error_tab">
                             <a id="daily-error-tab-link" href="#" data-toggle="tab">错误</a>
                         </li>
                     </ul>

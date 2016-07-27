@@ -12,6 +12,32 @@ var c = [];
 var log = []
 
 
+var buildTimer;
+
+var taskStatus;
+
+function  timedStatus(task_id){
+    if (taskStatus==1){
+        console.log('task success');
+        getPolicyResult(task_id,1);
+        stopTimer();
+    }else if(taskStatus==2){
+        console.log('task get an error');
+        getTaskError(task_id);
+        stopTimer();
+    }
+    else{
+        getTaskStatus(task_id);
+        buildTimer=setTimeout("timedStatus("+task_id+")",1000);
+    }
+
+
+}
+
+function stopTimer(){
+    clearTimeout(buildTimer);
+}
+
 $(function () {
 
     $('#policyTitle').bind({
@@ -64,6 +90,50 @@ function initValue() {
     stock_price = [];
     b = [];
     c = [];
+    taskStatus=-1;
+    log=[];
+}
+
+function  showError(error_content){
+                    $("#log-loading").addClass('hidden');
+
+                    $("#build-loading").addClass('hidden');
+
+                    $("#policy-status").removeClass("hidden");
+
+                    $('#policy_error').html((error_content));
+
+                    $('#error_tab').addClass('active');
+    
+                    $('#log_tab').removeClass('active');
+
+                    $('#policy_error').css('display','block');
+
+                    $('#policy_log').css('display','none');
+
+                    $('#policy_result_chart').html('<center><h3><br><br><br><br>代码编译错误，请看下方错误信息</h3></center>');
+}
+
+function showLog(log_content) {
+                    $("#log-loading").addClass('hidden');
+
+                    $("#build-loading").addClass('hidden');
+
+                    $("#policy-status").removeClass("hidden");
+
+                    $('#policy_log').html((log_content));
+
+                    $('#log_tab').addClass('active');
+
+                    $('#error_tab').removeClass('active');
+
+                    $('#policy_error').css('display','none');
+
+                    $('#policy_log').css('display','block');
+
+
+
+
 }
 
 
@@ -72,6 +142,44 @@ function saveTitle() {
     $("#saveBtn").removeAttr('disabled');
 }
 
+
+function getTaskError(task_id){
+    $.ajax({
+        type: "GET",
+        url: "/getTaskError/",
+        data: {
+            taskId: task_id,
+        },
+        success: function (taskError) {
+            console.log('ajax'+taskError);
+            showError(taskError);
+        },
+        error: function (jqXHR) {
+            alert("发生错误：" + jqXHR.status);
+        },
+    });
+}
+
+
+
+function getTaskStatus(task_id){
+
+    $.ajax({
+        type: "POST",
+        url: "/getTaskStatus/",
+        data: {
+            taskId: task_id,
+        },
+
+        success: function (status) {
+            taskStatus = status;
+            console.log(taskStatus);
+        },
+        error: function (jqXHR) {
+            alert("发生错误：" + jqXHR.status);
+        },
+    });
+}
 function buildPolicy(a) {
     savePolicy();
     initValue();
@@ -98,8 +206,10 @@ function buildPolicy(a) {
         },
         // dataType: "json",
         success: function (taskId) {
+            console.log('a ='+a);
             if (a == 0) {
-                getPolicyResult(taskId, 1)
+                timedStatus(taskId);
+                //getPolicyResult(taskId,1);
             }
             else if (a == 1) {
                 window.location.href = '../backtestPolicy/?task_id=' + taskId;
@@ -137,6 +247,14 @@ function getYaisData(data) {
 }
 
 function getPolicyResult(taskId, offset) {
+    if (taskStatus==2){
+        //task error,stop get result
+
+        stopTimer();
+        getTaskError(taskId);
+
+        return;
+    }
     $.ajax({
         type: "POST",
         url: "/getPolicyResult/",
@@ -292,24 +410,23 @@ function getPolicyResult(taskId, offset) {
 
                     logs = log.split(",");
 
-                    var str='';
 
-                    var str = '';
+
+                    var log_str = '';
                     for (var i = 0; i < logs.length; i++) {
                         log = logs[i].trim();
                         log =log.substring(1,log.length-1);
 
                         log =log.split(' ')
-                        
+                        //alert(log);
                         log = "<span style='color: #247bac;'>"+" "+log[0]+" "+log[1]+" "+ "</span>"
                         + "<span style='color: #285628;'>"+log[2]+" "+"</span>" + "<span style='color: white;'>"+log[3] +"</span>";
-                        str = str + log + "<br>";
+                        log_str = log_str + log + "<br>";
 
                     }
-                    $("#log-loading").addClass('hidden');
-                    $('#policy_log').html((str));
-                    $("#build-loading").addClass('hidden');
-                    $("#policy-status").removeClass("hidden");
+                    console.log(log_str);
+
+                    showLog(log_str);
 
                     $.ajax({
                         type: "POST",

@@ -47,4 +47,6 @@ urlpatterns = [
     url(r'^getBacktestInfo/$', alphaquant_views.getBacktestInfo,name='getBacktestInfo'),
     url(r'^setEditorInfo/$', alphaquant_views.setEditorInfo, name='setEditorInfo'),
 
+
+
 ]

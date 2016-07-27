@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
+
 #  帖子表
 class Article(models.Model):
     title = models.CharField(u'文章标题',max_length=64)
@@ -138,3 +139,4 @@ class Editor(models.Model):
     theme = models.CharField(max_length=20,default='monokai')
     wropmode = models.CharField(max_length=10,default='false')
     user = models.OneToOneField("UserProfile")
+

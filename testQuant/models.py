@@ -141,3 +141,12 @@ class Editor(models.Model):
     theme = models.CharField(max_length=20,default='monokai')
     wropmode = models.CharField(max_length=10,default='false')
     user = models.OneToOneField("UserProfile")
+
+
+class ComplieError(models.Model):
+    task = models.ForeignKey("Task")
+    error_code = models.IntegerField()
+    error_content = models.TextField()
+
+    def __unicode__(self):
+        return self.task.id
