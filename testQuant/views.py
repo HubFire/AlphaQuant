@@ -10,6 +10,7 @@ from PIL import Image
 import StringIO
 import uuid
 import  os
+import  json
 
 # Create your views here.
 
@@ -343,6 +344,36 @@ def account_regist(request):
             return HttpResponseRedirect('/login')
         else:
             return render(request, 'regist.html')
+
+
+# judge user exist
+def user_exist(request):
+    print 'user_exist'
+    if request.method == 'POST':
+        username = request.POST.get("username")
+        filter_username = User.objects.filter(username=username)
+        if len(filter_username) > 0:
+            userexist = True
+            return HttpResponse(json.dumps(userexist), content_type='application/json')
+        else:
+            userexist = False
+            return HttpResponse(json.dumps(userexist), content_type='application/json')
+    else:
+        return render(request, 'regist.html')
+
+
+# regist
+def regist(request):
+    if request.method == 'POST':
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        re_password = request.POST.get("re_password")
+        email = request.POST.get("email")
+        nickname = request.POST.get('nickname')
+        err_msg = ''
+        return render(request, 'regist.html')
+    else:
+        return render(request, 'regist.html')
 
 
 def account_info(request):

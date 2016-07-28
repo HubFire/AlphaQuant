@@ -21,7 +21,8 @@
               <form method = 'post'  action="{% url 'regist' %}">{% csrf_token %}
                 <div class="form-group form-group-lg">
                     <br>
-                    <input type="text" name="username" class="form-control" placeholder="用户名"  autofocus="autofocus">
+                    <input type="text" id="username" name="username" class="form-control" placeholder="用户名"  autofocus="autofocus" onblur="isExist()">
+                    <div id="user_exit"></div>
                     <br>
                     <input type="password" name="password" class="form-control"  placeholder="密码">
                     <br>
@@ -43,4 +44,9 @@
 
         </div>
     </div>
+{% endblock %}
+
+{% block jsfile %}
+    <script type="text/javascript" src="/static/js/register.js" charset="utf-8"></script>
+
 {% endblock %}
