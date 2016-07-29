@@ -133,3 +133,8 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     "%s/%s" %(BASE_DIR,"statics"),
 )
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+#EMAIL_HOST = 'smpt.gmail.com'
+#EMAIL_PORT = '25'

@@ -5,12 +5,18 @@ from django.http import Http404
 from django.core.exceptions import ObjectDoesNotExist
 from models import *
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from PIL import Image
 import StringIO
 import uuid
-import  os
-import  json
+import os
+import json
+from utils import Token
+from django.core.mail import send_mail
+from django.conf.global_settings import SECRET_KEY
+token_confirm = Token(SECRET_KEY)
+
 
 # Create your views here.
 
@@ -296,11 +302,14 @@ def account_login(request):
             username = request.POST.get('username')
             password = request.POST.get('password')
             user = authenticate(username=username, password=password)
-            if user is not None:
+            print user.is_active
+            if user is not None and user.is_active is True:
                 login(request, user)
                 return HttpResponseRedirect('/community/1')
-            else:
+            if user is None:
                 err_msg = '用户名或密码错误'
+            if user.is_active is False:
+                err_msg = 'yong hu ming wei ji huo'
         return render(request, 'login.html', {'err_msg': err_msg})
 
 
@@ -348,7 +357,6 @@ def account_regist(request):
 
 # judge user exist
 def user_exist(request):
-    print 'user_exist'
     if request.method == 'POST':
         username = request.POST.get("username")
         filter_username = User.objects.filter(username=username)
@@ -370,10 +378,38 @@ def regist(request):
         re_password = request.POST.get("re_password")
         email = request.POST.get("email")
         nickname = request.POST.get('nickname')
-        err_msg = ''
-        return render(request, 'regist.html')
+        user = User.objects.create(username=username, password=password, email=email, is_active=False)
+        user.set_password(password)
+        user.save()
+        userprofile = UserProfile()
+        userprofile.name = nickname
+        userprofile.user_id = user.id
+        userprofile.save()
+        token = token_confirm.generate_validate_token(username)
+        message = "\n".join([u'{0},welcome to join AlphaQuant'.format(username),
+                             u'please click url to complete the regist:', '/'.join(['localhost', 'activate', token])])
+        print message
+        send_mail(u'regist verification', message, 'liyongchang0001@126.com', [email])
+
+        return HttpResponse(json.dumps(True), content_type='application/json')
     else:
         return render(request, 'regist.html')
+
+
+# email verification
+def active_user(request, token):
+    try:
+        print token
+        username = token_confirm.confirm_validate_token(token)
+    except:
+        return HttpResponse(u'url out of date')
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return HttpResponse(u'the user dose not exist')
+    user.is_active = True
+    user.save()
+    return HttpResponseRedirect('/login')
 
 
 def account_info(request):
