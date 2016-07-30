@@ -387,9 +387,9 @@ def regist(request):
         userprofile.save()
         token = token_confirm.generate_validate_token(username)
         message = "\n".join([u'{0},welcome to join AlphaQuant'.format(username),
-                             u'please click url to complete the regist:', '/'.join(['localhost', 'activate', token])])
+                             u'please click url to complete the regist:', '/'.join(['www.alphaquant.top', 'activate', token])])
         print message
-        send_mail(u'regist verification', message, 'liyongchang0001@126.com', [email])
+        send_mail(u'regist verification', message, 'alphaquant@yeah.net', [email], fail_silently=False)
 
         return HttpResponse(json.dumps(True), content_type='application/json')
     else:

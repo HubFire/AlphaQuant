@@ -136,5 +136,9 @@ STATICFILES_DIRS = (
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-#EMAIL_HOST = 'smpt.gmail.com'
-#EMAIL_PORT = '25'
+EMAIL_HOST = 'smtp.yeah.net'
+EMAIL_PORT = '25'
+EMAIL_HOST_USER = 'alphaquant@yean.net'
+EMAIL_HOST_PASSWORD = 'hyhjb15571438089'
+EMAIL_USER_TLS = True
+
