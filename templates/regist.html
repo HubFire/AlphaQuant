@@ -18,7 +18,6 @@
         <div id="registform">
             <h1 class="text-center form_title">注&nbsp;册</h1>
             <p class='text-center form_subtitle gray'>我们致力于打造最高效、易用的量化交易平台</p>
-              <form method = 'post'  action="{% url 'regist' %}">{% csrf_token %}
                 <div class="form-group form-group-lg">
                     <br>
                     <input type="text" id="username" name="username" class="form-control" placeholder="用户名"  autofocus="autofocus" onblur="isExist()">
@@ -36,7 +35,6 @@
                     <br>
                 </div>
                 <button class="btn btn-primary btn-block btn-lg" type="button" onclick="regist()" >注册</button>
-            </form>
             <br>
             <div id="regist_result"></div>
 

@@ -34,6 +34,7 @@ urlpatterns = [
     url(r'^user/(\d+)/$', alphaquant_views.user_account_info, name='user_account'),
     url(r'^upload_head_img/$', alphaquant_views.upload_head_img, name='upload_head_img'),
     url(r'^user_exist/$', alphaquant_views.user_exist, name='user_exist'),
+    url(r'^email_exist/$', alphaquant_views.email_exist, name='email_exist'),
     url(r'^activate/(?P<token>\w+.[-_\w]*\w+.[-_\w]*\w+)/$', alphaquant_views.active_user, name='activate'),
 
 

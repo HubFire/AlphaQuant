@@ -302,14 +302,14 @@ def account_login(request):
             username = request.POST.get('username')
             password = request.POST.get('password')
             user = authenticate(username=username, password=password)
-            print user.is_active
-            if user is not None and user.is_active is True:
-                login(request, user)
-                return HttpResponseRedirect('/community/1')
+            if user is not None:
+                if user.is_active is True:
+                    login(request, user)
+                    return HttpResponseRedirect('/community/1')
+                else:
+                    err_msg = '用户未激活，请登录注册邮箱进行激活'
             if user is None:
                 err_msg = '用户名或密码错误'
-            if user.is_active is False:
-                err_msg = 'yong hu ming wei ji huo'
         return render(request, 'login.html', {'err_msg': err_msg})
 
 
@@ -366,6 +366,21 @@ def user_exist(request):
         else:
             userexist = False
             return HttpResponse(json.dumps(userexist), content_type='application/json')
+    else:
+        return render(request, 'regist.html')
+
+
+# judge email exist
+def email_exist(request):
+    if request.method == 'POST':
+        email = request.POST.get("email")
+        filter_email = User.objects.filter(email=email)
+        if len(filter_email) > 0:
+            emailexist = True
+            return HttpResponse(json.dumps(emailexist), content_type='application/json')
+        else:
+            emailexist = False
+            return HttpResponse(json.dumps(emailexist), content_type='application/json')
     else:
         return render(request, 'regist.html')
 
