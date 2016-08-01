@@ -56,7 +56,7 @@
             <div class="policy_list_content ">
                 {% autopaginate polist_list 10 %}
 
-                <table class="table table-hover">
+                <table class="table table-striped table-hover" id="listTable">
                     <thead>
                     <tr>
                         <th><input type="checkbox" id="selectAll"></th>
@@ -70,7 +70,7 @@
                         <tbody>
                         {% for policy in polist_list %}
 
-                            <tr id="li{{ policy.id }}">
+                            <tr id="li{{ policy.id }}" class="DynamicAdd" data-row-id="{{ policy.id }}">
                                 <td>
                                     <input type="checkbox" name="checkbox" value='{{ policy.id }}'>
                                 </td>
@@ -95,62 +95,118 @@
 {% block jsfile %}
     <script>
         $("document").ready(function () {
-            $("#selectAll").click(function () {
-                if (this.checked) {
-                    $("input[name='checkbox']").each(function () {
-                        this.checked = true;
-                    });
-                } else {
-                    $("input[name='checkbox']").each(function () {
-                        this.checked = false;
-                    });
-                }
-            });
+            var menu = new BootstrapMenu('.DynamicAdd', {       //.DynamicAdd是tbody下的tr的class名称
+                fetchElementData: function ($rowElem) {         //fetchElementData获取元数据
+                    var rowId = $rowElem.data('rowId');   //获取表格数据
+                    console.log(rowId);
+                    return rowId;    //return的目的是给下面的onClick传递参数
+                },
 
-            $("#deletePolicy").click(function () {
-                var obj = document.getElementsByName('checkbox');  //选择所有name="'test'"的对象，返回数组
-                //取到对象数组后，我们来循环检测它是不是被选中
-                var s = '';
-                for (var i = 0; i < obj.length; i++) {
-                    if (obj[i].checked) s += obj[i].value + ',';  //如果选中，将value添加到变量s中
-                }
-                //那么现在来检测s的值就知道选中的复选框的值了
-                if (s == '') {
-                    alert('你还没有选择任何内容！');
-                }
-                else {
-                    if (window.confirm('你确定要删除选中的策略吗？')) {
-                        $.ajax({
-                            type: "POST",
-                            url: "/deletePolicy/",
-                            data: {
-                                policy_ids:s,
-                            },
-                            // dataType: "json",
-                            success: function (data) {
-                                alert(data);
-                                location.reload();
-                            },
-                            error: function (jqXHR) {
-                                alert("发生错误：" + jqXHR.status);
-                            },
-                        });
-                    } else {
-                        return false;
+                actionsGroups: [  //给右键菜单的选项加一个分组，分割线
+                    /* ['setEditable', 'setUneditable' ],*/
+                    ['editDescription'],
+                    ['deleteRow']
+
+                ],
+                /* you can declare 'actions' as an object instead of an array,
+                 * and its keys will be used as action ids. */
+                //自定义右键菜单的功能
+                actions: {
+                    addDescription: {
+                        name: '<font size=3>添加</font>',
+                        iconClass: 'fa-plus',
+                        onClick: function (row) {    //添加右击事件
+                            $("#myAddModal").modal("show");
+                            console.log(row);
+                            //定义你自己的添加事件
+                        },
+                        isEnabled: function (row) {
+                            return row.isEditable;
+                        }
+                    },
+                    editDescription: {
+                        name: '<font size=3>修改</font>',
+                        iconClass: 'fa-edit',
+                        onClick: function (row) {   //修改右击事件
+                            alert(row.id);
+                            console.log(row);
+                            //定义你自己的修改事件
+                        },
+                        isEnabled: function (row) {
+                            return row.isEditable;
+                        }
+                    },
+
+                    deleteRow: {
+                        name: '<font size=3>删除</font>',
+                        iconClass: 'fa-trash',
+                        onClick: function (row) {  //删除右击事件
+                            alert(row.id);
+                            //定义你自己的删除事件
+                        },
+                        isEnabled: function (row) {
+                            return row.isEditable && row.isRemovable;
+                        }
                     }
                 }
             });
-
-
-            {#            function jqchk() {  //jquery获取复选框值#}
-            {#                var chk_value = [];#}
-            {#                $('input[name="checkbox"]:checked').each(function () {#}
-            {#                    chk_value.push($(this).val());#}
-            {#                });#}
-            {#                alert(chk_value.length == 0 ? '你还没有选择任何内容！' : chk_value);#}
-            {#            }#}
-
-
         });
+
+        $("#selectAll").click(function () {
+            if (this.checked) {
+                $("input[name='checkbox']").each(function () {
+                    this.checked = true;
+                });
+            } else {
+                $("input[name='checkbox']").each(function () {
+                    this.checked = false;
+                });
+            }
+        });
+
+        $("#deletePolicy").click(function () {
+            var obj = document.getElementsByName('checkbox');  //选择所有name="'test'"的对象，返回数组
+            //取到对象数组后，我们来循环检测它是不是被选中
+            var s = '';
+            for (var i = 0; i < obj.length; i++) {
+                if (obj[i].checked) s += obj[i].value + ',';  //如果选中，将value添加到变量s中
+            }
+            //那么现在来检测s的值就知道选中的复选框的值了
+            if (s == '') {
+                alert('你还没有选择任何内容！');
+            }
+            else {
+                if (window.confirm('你确定要删除选中的策略吗？')) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/deletePolicy/",
+                        data: {
+                            policy_ids: s,
+                        },
+                        // dataType: "json",
+                        success: function (data) {
+                            alert(data);
+                            location.reload();
+                        },
+                        error: function (jqXHR) {
+                            alert("发生错误：" + jqXHR.status);
+                        },
+                    });
+                } else {
+                    return false;
+                }
+            }
+        });
+        /*       {#            function jqchk() {  //jquery获取复选框值#}
+        {#                var chk_value = [];#}
+        {#                $('input[name="checkbox"]:checked').each(function () {#}
+        {#                    chk_value.push($(this).val());#}
+        {#                });#}
+        {#                alert(chk_value.length == 0 ? '你还没有选择任何内容！' : chk_value);#}
+        {#            }#}
+
+
+    });*/
+
     </script>
 {% endblock %}

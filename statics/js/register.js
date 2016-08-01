@@ -82,15 +82,15 @@ function regist() {
     $("#checkemail").empty();
     console.log(is_exist, is_confirmpwd, is_checkmail);
     if(is_exist == false){
-         $("#user_exist").append('<div class="alert alert-warning" data-dismiss="alert">用户名已存在</div>')
+        $("#user_exist").append('<div class="alert alert-warning" data-dismiss="alert">用户名已存在</div>')
     }
     if(is_confirmpwd == false){
-         $("#confirmpwd").append('<div class="alert alert-warning" data-dismiss="alert">两次密码不相同</div>');
+        $("#confirmpwd").append('<div class="alert alert-warning" data-dismiss="alert">两次密码不相同</div>');
     }
     if(is_checkmail == 1){
-         $("#checkemail").append('<div class="alert alert-warning" data-dismiss="alert">邮箱不合法</div>');
+        $("#checkemail").append('<div class="alert alert-warning" data-dismiss="alert">邮箱不合法</div>');
     }else if(is_checkmail == 2){
-         $("#checkemail").append('<div class="alert alert-warning" data-dismiss="alert">邮箱不能为空</div>');
+        $("#checkemail").append('<div class="alert alert-warning" data-dismiss="alert">邮箱不能为空</div>');
     }
     if(is_exist & is_confirmpwd & is_checkmail==3 ){
         $.ajax({
