@@ -35,6 +35,38 @@ def showPolicy_list(request):
         return HttpResponseRedirect('/login/')
 
 
+def ajax_getPolicyList(request):
+    if request.user.is_authenticated():
+        author = request.user.userprofile.id
+        policy_list = Policy.objects.filter(author_id=author).order_by('-update_time')
+        print policy_list
+
+        return HttpResponse(json.dumps(policy_list), content_type='application/json')
+    else:
+        return HttpResponseRedirect('/login/')
+
+
+def ajax_getPolicyByID(request):
+    if request.user.is_authenticated():
+        policy_id = request.POST.get('id')
+        policy = Policy.objects.filter(id=policy_id)
+        return HttpResponse(json.dumps(policy[0].name), content_type='application/json')
+    else:
+        return HttpResponseRedirect('/login/')
+
+
+def ajax_policyRename(request):
+    if request.user.is_authenticated():
+        policy_id = request.POST.get('id')
+        policy_name = request.POST.get('name')
+        policy = Policy.objects.get(id=policy_id)
+        policy.name = policy_name
+        policy.save()
+        return HttpResponse(json.dumps(True), content_type='application/json')
+    else:
+        return HttpResponseRedirect('/login/')
+
+
 def showPolicy(request):
     p_uuid = request.build_absolute_uri().split("?id=")[1]
     policy = ""
@@ -86,6 +118,7 @@ def savePolicy(request):
             except ObjectDoesNotExist as e:
                 return render(request, '404.html', {'err_msg': u'该策略不存在!'})
     return HttpResponse()
+
 
 def getTaskStatus(request):
     if request.method == 'POST':

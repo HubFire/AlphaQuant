@@ -70,7 +70,7 @@
                         <tbody>
                         {% for policy in polist_list %}
 
-                            <tr id="li{{ policy.id }}" class="DynamicAdd" data-row-id="{{ policy.id }}">
+                            <tr id="li{{ policy.id }}" class="DynamicAdd" data-row-id="{{ policy.id }}&{{ policy.name }}">
                                 <td>
                                     <input type="checkbox" name="checkbox" value='{{ policy.id }}'>
                                 </td>
@@ -89,16 +89,63 @@
 
 
         </div>
+
+        <div class="modal fade" id="renameModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">x</span>
+                            <span class="sr-only">Close</span>
+                        </button>
+                        <h4 class="modal-title" id="renameModalLable">重命名</h4>
+                    </div>
+                    <div class="modal-body text-center">
+                        <div>
+                            <form class="form-inline">
+                                <label>策略名: </label>
+                                <input type="text" class="input-medium" id="renameInput">
+                                <button type="button" class="btn btn-sm btn-lg btn-primary" onclick="renameBtn()">重命名</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="deleteModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">x</span>
+                            <span class="sr-only">Close</span>
+                        </button>
+                        <h4 class="modal-title" id="deleteModalLable">删除</h4>
+                    </div>
+                    <div class="modal-body text-center">
+                        <div id="policy_name"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-lg btn-danger" onclick="deleteBtn()">删除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 {% endblock %}
 
 {% block jsfile %}
     <script>
+        var policyID = '';
         $("document").ready(function () {
             var menu = new BootstrapMenu('.DynamicAdd', {       //.DynamicAdd是tbody下的tr的class名称
                 fetchElementData: function ($rowElem) {         //fetchElementData获取元数据
                     var rowId = $rowElem.data('rowId');   //获取表格数据
-                    console.log(rowId);
                     return rowId;    //return的目的是给下面的onClick传递参数
                 },
 
@@ -112,7 +159,7 @@
                  * and its keys will be used as action ids. */
                 //自定义右键菜单的功能
                 actions: {
-                    addDescription: {
+                    /*addDescription: {
                         name: '<font size=3>添加</font>',
                         iconClass: 'fa-plus',
                         onClick: function (row) {    //添加右击事件
@@ -123,34 +170,86 @@
                         isEnabled: function (row) {
                             return row.isEditable;
                         }
-                    },
+                    },*/
                     editDescription: {
-                        name: '<font size=3>修改</font>',
+                        name: '<font size=3>重命名</font>',
                         iconClass: 'fa-edit',
-                        onClick: function (row) {   //修改右击事件
-                            alert(row.id);
-                            console.log(row);
-                            //定义你自己的修改事件
+                        onClick: function (rowid) {   //修改右击事件
+                            $("#renameInput").val(rowid.split('&')[1]);
+                            policyID = rowid.split('&')[0];
+                            $("#renameModal").modal('toggle');
                         },
-                        isEnabled: function (row) {
-                            return row.isEditable;
+                        isEnabled: function (rowid) {
+                            return rowid.isEditable;
                         }
                     },
 
                     deleteRow: {
                         name: '<font size=3>删除</font>',
                         iconClass: 'fa-trash',
-                        onClick: function (row) {  //删除右击事件
-                            alert(row.id);
-                            //定义你自己的删除事件
+                        onClick: function (rowid) {  //删除右击事件
+                            policyID = rowid.split('&')[0];
+                            var policyName = rowid.split('&')[1];
+                            var str = "<label>确定删除策略: " + policyName +"</label>";
+                            $("#policy_name").empty();
+                            $("#policy_name").append(str);
+                            $("#deleteModal").modal('toggle');
                         },
-                        isEnabled: function (row) {
-                            return row.isEditable && row.isRemovable;
+                        isEnabled: function (rowid) {
+                            return rowid.isEditable && rowid.isRemovable;
                         }
                     }
                 }
             });
         });
+
+        function getPolicyByID(id) {
+            $.ajax({
+                type: 'POST',
+                data: {id: id},
+                url: '/ajax_getPolicyByID/',
+                success:function (ret) {
+                    policyName = ret;
+                },
+                error:function (jqXHR) {
+                    alert("发生错误：" + jqXHR.status);
+                }
+
+            });
+        }
+
+        function getPolicyList() {
+             $.ajax({
+                type: 'POST',
+                url: '/ajax_getPolicyList/',
+                success:function (ret) {
+                    return ret;
+                },
+                error:function (jqXHR) {
+                    alert("发生错误：" + jqXHR.status);
+                }
+
+            });
+        }
+        
+        function renameBtn() {
+            var policyName = $("#renameInput").val();
+            console.log(policyName);
+            $.ajax({
+                type: 'POST',
+                data: {id: policyID, name: policyName},
+                url: '/ajax_policyRename/',
+                success:function (ret) {
+                    if(ret == true){
+                        location.reload();
+                    }
+                },
+                error:function (jqXHR) {
+                    alert("发生错误：" + jqXHR.status);
+                }
+
+            });
+        }
 
         $("#selectAll").click(function () {
             if (this.checked) {
@@ -197,6 +296,25 @@
                 }
             }
         });
+
+        function deleteBtn() {
+            $.ajax({
+                        type: "POST",
+                        url: "/deletePolicy/",
+                        data: {
+                            policy_ids: policyID,
+                        },
+                        // dataType: "json",
+                        success: function (data) {
+                            alert(data);
+                            location.reload();
+                        },
+                        error: function (jqXHR) {
+                            alert("发生错误：" + jqXHR.status);
+                        },
+                    });
+        }
+
         /*       {#            function jqchk() {  //jquery获取复选框值#}
         {#                var chk_value = [];#}
         {#                $('input[name="checkbox"]:checked').each(function () {#}

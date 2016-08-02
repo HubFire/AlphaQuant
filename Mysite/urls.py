@@ -40,6 +40,9 @@ urlpatterns = [
 
 
     url(r'^policy_list/', alphaquant_views.showPolicy_list, name='policy_list'),
+    url(r'^ajax_getPolicyList/', alphaquant_views.ajax_getPolicyList, name='ajax_getPolicyList'),
+    url(r'^ajax_getPolicyByID/', alphaquant_views.ajax_getPolicyByID, name='ajax_getPolicyByID'),
+    url(r'^ajax_policyRename/', alphaquant_views.ajax_policyRename, name='ajax_policyRename'),
     url(r'^createPolicy/$', alphaquant_views.createPolicy, name='createPolicy'),
     url(r'policy/$',alphaquant_views.showPolicy, name='policy'),
     url(r'deletePolicy/$', alphaquant_views.deletePolicy, name='deletePolicy'),
